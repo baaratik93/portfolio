@@ -81,7 +81,7 @@ app.use('/graphql', graphqlHTTP({
             }).save()
             try {
                 return {
-                    ...diplome,
+                    ...diplome._doc,
                     _id: diplome.id
                 }
             } catch (error) {
@@ -90,13 +90,13 @@ app.use('/graphql', graphqlHTTP({
         },
         addExperience: async args => {
             const exp = await new Experience({
-                title: args.exInput.title,
+                title: args.expInput.title,
                 entreprise: args.expInput.entreprise,
                 year: args.expInput.year
             }).save()
             try {
                 return {
-                    ...exp,
+                    ...exp._doc,
                     _id: exp.id
                 }
             } catch (error) {
