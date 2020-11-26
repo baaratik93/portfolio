@@ -14,4 +14,4 @@ const expSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Diplome', expSchema)
+module.exports = mongoose.model('Experience', expSchema)

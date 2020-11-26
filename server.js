@@ -1,9 +1,12 @@
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose')
 const { buildSchema }  = require('graphql')
 const { graphqlHTTP } = require('express-graphql')
+const Diplome = require('./model/diplome')
+const Experience = require('./model/experience')
 mongoose.connect('mongodb://localhost/portfolio', { useNewUrlParser: true });
-
+const db = mongoose.connection
 db.on('error', error => {
 	throw new Error('Le serveur de BD est injoignable')
 })
@@ -25,7 +28,7 @@ app.use('/graphql', graphqlHTTP({
 
     type Diplome {
         title: String!
-        shool: String!
+        school: String!
         year: String!
     }
 
@@ -44,7 +47,7 @@ app.use('/graphql', graphqlHTTP({
     }
     input DiplomeInput {
             title: String!
-            shool: String!
+            school: String!
             year: String!
     }
     input ExpInput {
@@ -70,7 +73,36 @@ app.use('/graphql', graphqlHTTP({
     }
     `),
     rootValue: {
-
+        addDiplome: async args => {
+            const diplome =await new Diplome({
+                title: args.diplomeInput.title,
+                school: args.diplomeInput.school,
+                year: args.diplomeInput.year
+            }).save()
+            try {
+                return {
+                    ...diplome,
+                    _id: diplome.id
+                }
+            } catch (error) {
+                throw error
+            }
+        },
+        addExperience: async args => {
+            const exp = await new Experience({
+                title: args.exInput.title,
+                entreprise: args.expInput.entreprise,
+                year: args.expInput.year
+            }).save()
+            try {
+                return {
+                    ...exp,
+                    _id: exp.id
+                }
+            } catch (error) {
+                throw error
+            }
+        }
     },
     graphiql: true
 }))
